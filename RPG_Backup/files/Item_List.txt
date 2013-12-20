@@ -1,0 +1,16 @@
+1  0 'Potion' 					1 99 0 100  50
+2  0 'Mid-Potion'				1 99 0 250  150
+3  1 'Mana Potion'			1 99 0 150  20
+4  1 'Mid-Mana Potion'		1 99 0 400  50
+5  2 'Grenade'					1 99 2 75   50
+6  2 'Mid-Grenade'			1 99 2 200  100
+7  3 'Revive'					1 99 0 250  1
+8  3 'Mid-Revive'				1 99 0 500  100
+9  4 'Staff of BookSmarts'	1 99 4 1500 0	0	0	0	0	10	4
+10 4 'The Orifice Maker'	1 99 4 1500 0	0	0	12	0	0	0
+11 4 'Big-Ass Shield'		1 99 4 1500 0	0	0	2	8	0	3
+12 4 'Poofy Hat'				1 99 4 900	1	0	5	0	3	0	3
+13 4 'Snuggly Shirt' 		1 99 4 1000	2	5	0	0	4	0	0
+14 4 'Steel-Toed Boots'		1 99 4 800	3	0	0	2	5	0	0
+15 5 'Cure 1 Tech'			1 99 0 400	1
+16 5 'Revive 1 Tech'			1 99 0 500	7

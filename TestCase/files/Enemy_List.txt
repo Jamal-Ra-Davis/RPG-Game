@@ -1,0 +1,5 @@
+1 'Evil Frog' 						20		20		5	5 	5 	5 	1 	9
+2 'Man-eating Goat'				65 	30 	3 	7 	2 	6	1	10
+3 'Wolf' 							50 	60 	7 	3 	6 	4	1	9
+4 'Bar Wench' 						100 	80		4 	4 	4 	4	2	9	10
+5 'Giant Bird with Shotgun'	200	60		7	6	3	3	2	9	11

@@ -1,0 +1,2 @@
+5 'Giant Bird with Shotgun'	200	60		7	6	3	3	2	9	11
+ 

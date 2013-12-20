@@ -1,0 +1,6 @@
+'Mr. Warriorguy' 0 30 44872 200 58 24 17 22 19 1 3 4
+'Senor Toruga' 0 28 37851 104 112 18 22 22 19 1 2 7
+'Miss MagicTits' 0 30 45412 224 184 22 21 18 16 2 4 6
+
+
+name dead lvl exp hp mp att def mag mdef skillIDs
