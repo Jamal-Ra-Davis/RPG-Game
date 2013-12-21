@@ -481,6 +481,12 @@ void MpDrain::use(player **ply_lst, int numP, int caster, int targ)
 void MpDrain::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
 						int caster, int targ)
 {
+	if (enm_lst[targ].isDead())
+	{
+		printf("%s is dead, cannot use %s. *DEBUG: Happening inside use func\n", 
+				 enm_lst[targ].getName(), name);
+		return;
+	}
 	if (ply_lst[caster]->getMP() >= mp_cost)
 	{
 		int mag_p = ply_lst[caster]->getMag_btl();
