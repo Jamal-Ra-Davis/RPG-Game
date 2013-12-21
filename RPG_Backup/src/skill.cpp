@@ -174,6 +174,38 @@ skill* getSkill(int id)
 			((RevSpell*)temp)->set_pts(heal_pts);
 			break;
 		}
+/*
+		case 4://MpDrain
+		{
+			int drain_pts;
+			fscanf(fp, " %d ", &drain_pts);
+		
+			temp = new MpDrain;
+			temp->set_vals(name, ID, mp_cost, targ_type);
+			((MpDrain*)temp)->set_pts(drain_pts);
+			break;
+		}
+		case 5://MpGift
+		{
+			int gift_pts;
+			fscanf(fp, " %d ", &gift_pts);
+
+			temp = new MpGift;
+			temp->set_vals(name, ID, mp_cost, targ_type);
+			((MpGift*)temp)->set_pts(gift_pts)
+			break;
+		}
+		case 6://PhySkill
+		{
+			int phys_pts;
+			fscanf(fp, " %d ", &phys_pts);
+
+			temp = new PhySkill;
+			temp->set_vals(name, ID, mp_cost, targ_type);
+			((PhySkill*)temp)->set_pts(phys_pts)
+			break;
+		}
+*/
 		case 4://E_AttSpell
 		{
 			int att_pts;
@@ -198,6 +230,36 @@ skill* getSkill(int id)
 		{
 			temp = new E_CripplingShot;
 			temp->set_vals(name, ID, mp_cost, targ_type);
+			break;
+		}
+		case 7://MpDrain
+		{
+			int drain_pts;
+			fscanf(fp, " %d ", &drain_pts);
+      
+			temp = new MpDrain;
+			temp->set_vals(name, ID, mp_cost, targ_type);
+			((MpDrain*)temp)->set_pts(drain_pts);
+			break;
+		}
+		case 8://MpGift
+		{
+			int gift_pts;
+			fscanf(fp, " %d ", &gift_pts);
+
+			temp = new MpGift;
+			temp->set_vals(name, ID, mp_cost, targ_type);
+			((MpGift*)temp)->set_pts(gift_pts);
+			break;
+		}
+		case 9://PhySkill
+		{
+			int phys_pts;
+			fscanf(fp, " %d ", &phys_pts);
+
+			temp = new PhySkill;
+			temp->set_vals(name, ID, mp_cost, targ_type);
+			((PhySkill*)temp)->set_pts(phys_pts);
 			break;
 		}
 	}
@@ -377,7 +439,7 @@ void RevSpell::use(player **ply_lst, int numP, int caster, int targ)
    }
 }
 void RevSpell::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
-                    int caster, int targ)
+						 int caster, int targ)
 {
    if (ply_lst[caster]->getMP() >= mp_cost)
    {
@@ -404,6 +466,147 @@ void RevSpell::printInfo()
 	printf("------------------------\n");
 	printf("%s can be used in and out of battle to revive a player from the dead\n", name);
 	printf("Health Points Restored: %d\n\n", restore_pts);
+}
+
+//----------------------------------------------------------------------------------
+
+void MpDrain::set_pts(int A)
+{
+	drain_pts = A;
+}
+void MpDrain::use(player **ply_lst, int numP, int caster, int targ)
+{
+	printf("%s cannot  be used outside of battle\n", name);
+}
+void MpDrain::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+						int caster, int targ)
+{
+	if (enm_lst[targ].isDead())
+	{
+		printf("%s is dead, cannot use %s. *DEBUG: Happening inside use func\n", 
+				 enm_lst[targ].getName(), name);
+		return;
+	}
+	if (ply_lst[caster]->getMP() >= mp_cost)
+	{
+		int mag_p = ply_lst[caster]->getMag_btl();
+		int mdef_e = enm_lst[targ].getMdef_btl();
+
+//    int dam = (int)((ply_lst[caster]->getMag_btl()/((float)(enm_lst[targ].getMdef_btl())))*att_pts);
+		float drain = (mag_p - mdef_e)/((float)(mag_p + mdef_e));
+		drain = 3*drain*(mag_p/4.0) + mag_p;
+		drain *= drain_pts;
+		int drain_dam = (int)drain;
+		
+		int temp_mp = enm_lst[targ].getMP();
+		if (drain_dam > temp_mp)
+			drain_dam = temp_mp;
+		enm_lst[targ].removeMP(drain_dam);
+		ply_lst[caster]->removeMP(mp_cost);
+		ply_lst[caster]->restoreMP(drain_dam);
+	}
+	else
+	{
+		printf("%s does not have enough MP to cast %s\n", ply_lst[caster]->getName(),
+				 name);
+	}
+}
+void MpDrain::printInfo()
+{
+	printf("%s Desription:\n", name);
+	printf("------------------------\n");
+	printf("%s can only be used inside of battle to drain MP from an enemy\n", name);
+	printf("Drain factor: %d\n\n", drain_pts);
+}
+
+//----------------------------------------------------------------------------------
+
+void MpGift::set_pts(int A)
+{
+	gift_pts = A;
+}
+void MpGift::use(player **ply_lst, int numP, int caster, int targ)
+{
+	if (ply_lst[caster]->getMP() >= mp_cost)
+	{
+		ply_lst[caster]->removeMP(mp_cost);
+		int gift = (int)((gift_pts/100.0)*ply_lst[caster]->getMax_MP());
+		int playerMP = ply_lst[caster]->getMP();
+		if (gift > playerMP)
+			gift = playerMP;
+		ply_lst[caster]->removeMP(gift);
+		ply_lst[targ]->restoreMP(gift);
+	}
+	else
+	{
+		printf("%s does not have enough MP to cast %s\n", ply_lst[caster]->getName(),
+				 name);
+	}
+}
+void MpGift::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+					  int caster, int targ)
+{
+	if (ply_lst[caster]->getMP() >= mp_cost)
+	{
+		ply_lst[caster]->removeMP(mp_cost);
+		int gift = (int)((gift_pts/100.0)*ply_lst[caster]->getMax_MP());
+		int playerMP = ply_lst[caster]->getMP();
+		if (gift > playerMP)
+			gift = playerMP;
+		ply_lst[caster]->removeMP(gift);
+		ply_lst[targ]->restoreMP(gift);
+	}
+	else
+	{
+		printf("%s does not have enough MP to cast %s\n", ply_lst[caster]->getName(),
+				 name);
+	}
+}
+void MpGift::printInfo()
+{
+	printf("%s Desription:\n", name);
+	printf("------------------------\n");
+	printf("%s can be used in and out of battle to give MP to another player\n", name);
+	printf("Percentage of MP given: %d\n\n", gift_pts);
+}
+
+//----------------------------------------------------------------------------------
+
+void PhySkill::set_pts(int A)
+{
+	phys_pts = A;
+}
+void PhySkill::use(player **ply_lst, int numP, int caster, int targ)
+{
+	printf("%s cannot  be used outside of battle\n", name);
+}
+void PhySkill::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+						 int caster, int targ)
+{
+	if (ply_lst[caster]->getMP() >= mp_cost)
+	{
+		int att_p = ply_lst[caster]->getAtt_btl();
+		int def_e = enm_lst[targ].getDef_btl();
+
+//    int dam = (int)((ply_lst[caster]->getMag_btl()/((float)(enm_lst[targ].getMdef_btl())))*att_pts);
+		float dam = (att_p - def_e)/((float)(att_p + def_e));
+		dam = 3*dam*(att_p/4.0) + att_p;
+		dam *= phys_pts;
+		enm_lst[targ].takeDamage((int)dam);
+		ply_lst[caster]->removeMP(mp_cost);
+	}
+	else	
+	{
+		printf("%s does not have enough MP to cast %s\n", ply_lst[caster]->getName(),
+				 name);
+	}
+}
+void PhySkill::printInfo()
+{
+	printf("%s Desription:\n", name);
+   printf("------------------------\n");
+	printf("%s can only be used inside of battle to damage an enemy(based of att)\n", name);
+   printf("Damage factor: %d\n\n", phys_pts);
 }
 //----------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------

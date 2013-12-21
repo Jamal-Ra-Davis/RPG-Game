@@ -535,8 +535,17 @@ void skillTeach::use(player **ply_lst, int numP, int targ)
 		int sel = getSel("1. Yes", "2. No");
 		if (sel == 1)
 		{
-			ply_lst[targ]->pushSkill(temp);
-			stock--;
+			if (!ply_lst[targ]->allSkillRepeat(temp->getID()))
+			{
+				ply_lst[targ]->pushSkill(temp);
+				printf("%s learned %s\n", ply_lst[targ]->getName(), temp->get_name());
+				stock--;
+			}
+			else
+			{
+				printf("%s already knows %s, cancelling action...\n",  ply_lst[targ]->getName(), temp->get_name());
+				delete temp;
+			}
 		}
 		else
 		{

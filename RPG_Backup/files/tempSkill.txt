@@ -1,2 +1,2 @@
-11	6 'Crippling Shot'	1	75	
+11	6 'Crippling Shot'	1	75
  

@@ -85,6 +85,41 @@ class RevSpell: public skill
 					int caster, int targ);
 		void printInfo();
 };
+class MpDrain: public skill
+{
+	int drain_pts;
+
+	public:
+		void set_pts(int);
+		void use(player **ply_lst, int numP, int caster, int targ);
+		void use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+					int caster, int targ);
+		void printInfo();
+};
+class MpGift: public skill
+{
+	int gift_pts;
+	
+	public:
+		void set_pts(int);
+		void use(player **ply_lst, int numP, int caster, int targ);
+		void use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+					int caster, int targ);
+		void printInfo();
+};
+class PhySkill: public skill
+{
+	int phys_pts;
+
+	public:
+		void set_pts(int);
+		void use(player **ply_lst, int numP, int caster, int targ);
+		void use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+					int caster, int targ);
+		void printInfo();
+};
+
+//----------------------------------------------------------------------------------
 
 class E_AttSpell: public skill
 {

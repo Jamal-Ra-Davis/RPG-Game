@@ -1,2 +1,2 @@
-16 5 'Revive 1 Tech'			1 99 0 500	7
+2  0 'Mid-Potion'				1 99 0 250  150
  

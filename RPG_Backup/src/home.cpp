@@ -152,6 +152,30 @@ void home::printPlayers()
 		printf("%d. %s\n", i+1, ply_lst[i]->getName());
 	}
 }
+void home::printPlayersDetailed()
+{
+	if (num_plys == 0)
+	{
+		printf("There are no players at home...\n");
+		return;
+	}
+	printf("Players currently residing at home. %d slots are available.\n\n", Max_members-num_plys);
+
+	printf("Name                            Class      Lvl   Health     MP\n");
+	printf("==============================  =========  ====  =========  =========\n");
+	for (int i=0; i<num_plys; i++)
+	{
+		char LVL[32], HEALTH[32], MP[32];
+		sprintf(LVL, "%d", ply_lst[i]->getLevel());
+		sprintf(HEALTH, "%d/%d", ply_lst[i]->getHealth(), ply_lst[i]->getMax_Health_btl());
+		sprintf(MP, "%d/%d", ply_lst[i]->getMP(), ply_lst[i]->getMax_MP_btl());
+
+		printf("%-30s  %-9s  %-4s  %-9s  %-9s\n", ply_lst[i]->getName(),
+				 ply_lst[i]->getClassName(), LVL, HEALTH, MP);
+	}
+	printf("\n");
+
+}
 void home::enterHome(party *in)
 {
 	player_party = in;
@@ -162,7 +186,8 @@ void home::enterHome(party *in)
 		printf("Home\n");
 		printf("-------------------------\n");
 		int sel = getSel("1. Deposit Item", "2. Withdraw Item", 
-							  "3. Deposit Player", "4. Withdraw Player", "5. Cancel");
+							  "3. Deposit Player", "4. View Players in home",
+							  "5. Withdraw Player", "6. Cancel");
 
 		switch (sel)
 		{
@@ -183,10 +208,15 @@ void home::enterHome(party *in)
 			}
 			case 4:
 			{
+				printPlayersDetailed();
+				break;
+			}	
+			case 5:
+			{
 				withdrawPlayer();
 				break;
 			}
-			case 5:
+			case 6:
 			{
 				printf("Cancelling action...\n");
 				in_home = false;

@@ -8,4 +8,10 @@
 8	3 'Revive 2'			0	50	100
 9	4 'Ice 1'				0	15	6
 10	5 'All-Ice 1'			1	50	6
-11	6 'Crippling Shot'	1	75	
+11	6 'Crippling Shot'	1	75
+12 7 'MP Drain 1'			2	10	3
+13 7 'MP Drain 2'			2	20 7	
+14 8 'MP Gift 1'			0	5	15
+15 8 'MP Gift 2'			0	10	35
+16 9 'Beefy Punch 1'		2	5	5
+17 9 'Beefy Punch 2'		2	10	12

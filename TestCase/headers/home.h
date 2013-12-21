@@ -37,6 +37,7 @@ class home
 		bool inventoryFull();
 		bool partyFull();
 		void printPlayers();
+		void printPlayersDetailed();
 
 		void enterHome(party*);
 			void depositItem();

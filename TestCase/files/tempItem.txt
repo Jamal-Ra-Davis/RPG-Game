@@ -1,2 +1,2 @@
-3  1 'Mana Potion'			1 99 0 150  20
+2  0 'Mid-Potion'				1 99 0 250  150
  

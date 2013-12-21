@@ -612,12 +612,12 @@ void player::printStats()
 void player::printSkills()
 {
 	printf("%s's Battle Skills:\n", name);
-	printf("-----------------------\n");
+	printf("--------------------------------------\n");
 	for (int i=0; i<skill_cnt; i++)//you replaced num_skills with skill_cnt
 	{
 		if (skill_lst[i] != NULL)
 		{
-			printf("%d. %-12s  MP Cost: %d\n", i+1, skill_lst[i]->get_name(),
+			printf("%d. %-16s  MP Cost: %d\n", i+1, skill_lst[i]->get_name(),
 				 	 skill_lst[i]->get_MPcost());
 		}
 		else
@@ -630,7 +630,7 @@ void player::printSkills()
 void player::printAllSkills()
 {
 	printf("%s's Skill Bank:\n", name);
-   printf("-----------------------\n");
+   printf("--------------------------------------\n");
 	if (allSkills == NULL)
 	{
 		printf("%s has no skills.\n", name);
@@ -640,7 +640,7 @@ void player::printAllSkills()
 	int i=1;
 	for (loop_ptr = allSkills; loop_ptr != NULL; loop_ptr = loop_ptr->getNext(), i++)
 	{
-		printf("%d. %-12s  MP Cose: %d\n", i, loop_ptr->get_name(), loop_ptr->get_MPcost());
+		printf("%d. %-16s  MP Cost: %d\n", i, loop_ptr->get_name(), loop_ptr->get_MPcost());
 	}
 	printf("\n");
 }
