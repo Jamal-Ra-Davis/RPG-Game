@@ -1,2 +1,2 @@
-5 'Giant Bird with Shotgun'	200	60		7	6	3	3	2	9	11
+4 'Bar Wench' 						100 	80		4 	4 	4 	4	2	9	10
  

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+
 #include "../headers/game_hub.h"
 #include "../headers/party.h"
 #include "../headers/areas.h"
@@ -10,6 +11,8 @@
 #include "../headers/shop.h"
 #include "../headers/inn.h"
 #include "../headers/home.h"
+#include "../headers/quest.h"
+#include "../headers/questHall.h"
 
 game_hub::game_hub()
 {
@@ -46,6 +49,9 @@ game_hub::game_hub()
 	Inn->setInn(300);
 
 	Home = new home(4, 100);
+
+//	Hall = new questHall(1, "Quest Hall", 4);
+    Hall = getQuestHall(1);
 /*
 	int ids[14];
 	int size = 14;
@@ -75,6 +81,7 @@ game_hub::~game_hub()
 
 	delete Inn;	
 	delete Home;
+	delete Hall;
 }
 void game_hub::startGame()
 {
@@ -102,9 +109,12 @@ void game_hub::loadGame()
 	FILE *fp;
 	fp = fopen("./files/Game_save.txt", "r");
 	fscanf(fp, " %d %d ", &active_areas, &active_shops);
+    fclose(fp);
 	Team->loadParty();
 	Home->loadHome();
-	fclose(fp);
+    fp = fopen("./files/QuestHall_save.txt", "r");
+    Hall->loadQuestHall(fp);
+    fclose(fp);
 }
 void game_hub::saveGame()
 {
@@ -119,6 +129,9 @@ void game_hub::saveGame()
 	fclose(fp);
 	Team->saveParty();
 	Home->saveHome();
+    fp = fopen("./files/QuestHall_save.txt", "w");
+    Hall->saveQuestHall(fp);
+    fclose(fp);
 }
 void game_hub::gameLoop()
 {
@@ -171,8 +184,12 @@ void game_hub::gameLoop()
 			}
 			case 3://Quest Hall
 			{
+				Hall->enterQuestHall(Team);
+				break;
+				//--------------------------------------------
 				printf("Welcome to the quest hall, what would you like to do?\n");
-				int sel = getSel("1. Recruit new party member", "2. Leave");
+				int sel = getSel("1. Recruit new party member", "2. Take Quest",
+									  "3. Leave");
 				if (sel == 1)
 				{
 					printf("\n");
@@ -199,11 +216,44 @@ void game_hub::gameLoop()
 								delete test;
 							break;
 						}
+/*
+						case 3:
+						{
+							quest *temp = getQuest(1);
+							printf("Accept quest: '%s'?\n", temp->getName());
+							int sel = getSel("1. Yes", "2. No");
+							if (sel == 1)
+							{
+								Team->acceptQuest(temp);
+							}
+							else
+							{
+								printf("Did not accept '%s'...\n", temp->getName());
+								delete temp;
+							}
+							break;
+						}
+*/
 						case 3:
 						{
 							printf("Cancelling action...\n");
 							break;
 						}
+					}
+				}
+				else if (sel == 2)
+				{
+					quest *temp = getQuest(1);
+					printf("Accept quest: '%s'?\n", temp->getName());
+					int sel = getSel("1. Yes", "2. No");
+					if (sel == 1)
+					{
+						Team->acceptQuest(temp);
+					}
+					else
+					{
+						printf("Did not accept '%s'...\n", temp->getName());
+						delete temp;
 					}
 				}
 				else

@@ -8,6 +8,7 @@ class areas;
 class shop;
 class inn;
 class home;
+class questHall;
 
 class game_hub
 {
@@ -24,13 +25,14 @@ class game_hub
 
 	inn *Inn;	
 	home *Home;
+	questHall *Hall;
 
 	public:
 		game_hub();
 		~game_hub();
 		void startGame();
-			void newGame();
-			void loadGame();
+		void newGame();
+		void loadGame();
 
 		void saveGame();
 		void gameLoop();//May change return type to int for more info		

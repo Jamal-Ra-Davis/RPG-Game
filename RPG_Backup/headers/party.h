@@ -6,6 +6,7 @@ class party;
 class player;
 class item;
 class enemy;
+class quest;
 
 class party
 {
@@ -18,6 +19,8 @@ class party
 
 		item **inventory;
 		int inv_size;
+
+		quest *active_quest;
 
 		bool game_over;
 
@@ -38,7 +41,10 @@ class party
 			{return inv_size;}
 		bool isGameOver()
 			{return game_over;}
-		
+		quest* getActiveQuest()
+			{return active_quest;}		
+
+
 		void recieveGold(int);
 		void loseGold(int);
 		bool goldCheck(int);
@@ -66,6 +72,7 @@ class party
 		item* removeItems(int, int);
 		void discardItem(int);
 		item* swapItem(item*);
+		int findItemIndex(int);
 
 		void equipGear(int, int);
 		void unequipGear(int, int);
@@ -73,6 +80,17 @@ class party
 		void useItem(int, int);
 //		void useItemBtl(int itm_idx, player **ply_lst, int num_plys, enemy *enm_lst, int num_enms, int targ);
 		void viewItemInfo(int);
+
+		void acceptQuest(quest*);
+		void discardQuest();
+		void deleteQuest();
+		quest* swapQuest(quest*);
+		void printQuest();
+		void recieveQuestRewards();
+		bool hasQuest();
+		bool metQuestRequirements();
+		bool questCompleted();
+				
 
 
 		void managePlayers();

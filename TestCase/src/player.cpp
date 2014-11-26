@@ -65,14 +65,20 @@ player* getNewPlayer()
 
       printf("Your character's name will be %s and they will be a %s...\n", temp_name, classes[class_sel]);
       printf("Is this ok?\n");
-      int sel = getSel("1. Yes", "2. No");
-      if (sel == 2)
+      int sel = getSel("1. Yes", "2. No", "3. Cancel");
+		if (sel == 1)
+			break;
+      else if (sel == 2)
       {  
          free(temp_name);
          printf("Resetting character...\n");
       }
       else
-         break;
+		{
+			printf("Cancelling action...\n");
+			free(temp_name);
+         return NULL;
+		}
    }
    player *character = new player;
    character->setPlayer(temp_name, class_sel);

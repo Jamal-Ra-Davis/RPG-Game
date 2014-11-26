@@ -3,6 +3,8 @@
 #include "../headers/skill.h"
 #include "../headers/item.h"
 #include "../headers/Safe_Input.h"
+#include "../headers/quest.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -24,6 +26,8 @@ party::party()
 	inv_size = 10;
 	inventory = new item*[inv_size];
 
+	active_quest = NULL;
+
 	for (int i=0; i<Max_members; i++)
 	{
 		ply_lst[i] = NULL;
@@ -35,6 +39,8 @@ party::party()
 }
 party::~party()
 {
+	if (active_quest != NULL)
+		delete active_quest;
 	for (int i=0; i<Max_members; i++)
 	{
 		if (ply_lst[i] != NULL)
@@ -482,6 +488,18 @@ item* party::swapItem(item *loot)
 	inventory[sel] = loot;
 	return temp;
 }
+int party::findItemIndex(int id)
+{
+	for (int i=0; i<inv_size; i++)
+	{
+		if (inventory[i] != NULL)
+		{
+			if (inventory[i]->getID() == id)
+				return i;
+		}
+	}
+	return -1;	
+}
 //Assume index coming in is 0 based, not 1 based
 void party::equipGear(int idx, int player_idx)
 {
@@ -569,6 +587,133 @@ void party::viewItemInfo(int itm_idx)
 		return;
 	}
 	inventory[itm_idx]->printInfo();
+}
+void party::acceptQuest(quest *in)
+{
+	if (in == NULL)
+	{
+		printf("Error: Invalid quest\n");
+		return;
+	}
+	if (active_quest == NULL)
+	{
+		active_quest = in;
+		printf("Accepted '%s'...\n", active_quest->getName());
+	}
+	else
+	{
+		printf("You have already accepted quest: '%s'\n",
+				 active_quest->getName());			
+		char sel1[128], sel2[128];
+		sprintf(sel1, "1. Quit '%s' and accept '%s'?", 
+				  active_quest->getName(), in->getName());
+		sprintf(sel2, "2. Don't accept '%s'", in->getName());
+
+		int sel = getSel(sel1, sel2);
+		if (sel == 1)
+		{
+			quest *temp = swapQuest(in);
+			acceptQuest(temp);
+		}
+		else
+		{
+			printf("Did not accept '%s'...\n", in->getName());
+			delete in;
+		}
+	}	
+}
+void party::discardQuest()
+{
+	if (active_quest == NULL)
+		printf("No quest currently accepted...\n");
+	else
+	{
+		printf("Quit '%s'?\n", active_quest->getName());
+		int sel = getSel("1. Yes", "2. No");
+		if (sel == 1)
+		{
+			printf("'%s' quest has been quit...\n", active_quest->getName());
+			delete active_quest;
+			active_quest = NULL;
+		}
+		else
+		{
+			printf("Did not quit '%s'...\n", active_quest->getName());
+		}
+	}	
+}
+void party::deleteQuest()
+{
+	if (active_quest == NULL)
+		return;
+	delete active_quest;
+	active_quest = NULL;
+}
+quest* party::swapQuest(quest* in)
+{
+	quest *temp = active_quest;
+	active_quest = in;
+	return temp;	
+}
+void party::printQuest()
+{
+	if (active_quest == NULL)
+	{
+		printf("No quest currently accepted...\n\n");
+		return;
+	}
+	active_quest->checkQuestRequirements(inventory, inv_size);//Check for fetch, not kill
+	active_quest->printQuestRequirements();
+}
+void party::recieveQuestRewards()
+{
+	if (active_quest == NULL)
+	{
+		printf("Error: No quest accepted...\n");
+	}
+	if (!active_quest->isQuestComplete())
+	{
+		printf("Error: You're cheating or something, quest hasn't been completed\n");
+		return;
+	}	
+	printf("Recieving reward for completing '%s'...\n", 
+			 active_quest->getName());
+	recieveGold(active_quest->getGoldReward());
+	printf("Recieved %d gold...\n", active_quest->getGoldReward());
+	if (active_quest->hasItemReward())
+	{
+		item *itm = active_quest->getItemReward();
+		recieveItem(itm);
+		printf("Obtained %d %s(s)...\n", itm->getStock(), itm->getName());
+	}
+	if (active_quest->getType() == 2)
+	{
+		item *temp = removeItems(findItemIndex(((fetchQuest*)active_quest)->getItemID()), 
+										 ((fetchQuest*)active_quest)->getFetchNumber());
+		if (temp != NULL)
+			delete temp;	
+	}
+	delete active_quest;
+	active_quest = NULL;
+}
+bool party::hasQuest()
+{
+	if (active_quest != NULL)
+		return true;
+	else
+		return false;
+}
+bool party::metQuestRequirements()
+{
+	if (active_quest == NULL)
+		return false;
+	return active_quest->metRequirements();
+}
+bool party::questCompleted()
+{
+	if (active_quest == NULL)
+		return false;
+	return active_quest->isQuestComplete();
 }
 void party::managePlayers()
 {
@@ -964,8 +1109,8 @@ void party::partyMenu()
 		printf("Party Menu\n");
 		printf("-------------------------------------\n");
 		int man_sel = getSel("1. View Party Info", "2. Manage Inventory",
-									"3. Change Party Order", "4. Remove Party Member",
-									"5. Cancel");
+									"3. View Quest Stats", "4. Change Party Order", 
+									"5. Remove Party Member", "6. Cancel");
 
 		switch (man_sel)
 		{
@@ -981,15 +1126,20 @@ void party::partyMenu()
 			}
 			case 3:
 			{
-				switchPartyOrder();
+				printQuest();
 				break;
 			}
 			case 4:
 			{
-				deletePlayer_OB();
+				switchPartyOrder();
 				break;
 			}
 			case 5:
+			{
+				deletePlayer_OB();
+				break;
+			}
+			case 6:
 			{
 				printf("Cancelling action...\n");
 				partyMenu = false;
@@ -1004,6 +1154,12 @@ void party::printPartyInfo()
 	printf("---------------------------------\n");
 	printf("Gold: %d\n\n", gold);
 	
+	printf("Quest: ");
+	if (active_quest == NULL)
+		printf("None\n\n");
+	else
+		printf("'%s'\n\n", active_quest->getName());
+
 	printf("Name                            Class      Lvl   Health     MP\n");
 	printf("==============================  =========  ====  =========  =========\n");
 //	char *classes[3] = {"Warrior", "Defender", "Mage"};
@@ -1078,7 +1234,19 @@ void party::saveParty()
 
 	fp = fopen("./files/Party_save.txt", "w");
 	assert(fp != NULL);
-	fprintf(fp, "%d %d \n", gold, num_plys);
+	fprintf(fp, "%d %d ", gold, num_plys);
+	//Save whether you have active quest or not, if so saves its ID
+	if (active_quest != NULL)
+	{
+		fprintf(fp, "%d \n", active_quest->getID());
+	}
+	else
+		fprintf(fp, "0 \n");
+	fclose(fp);
+	//Saves the actual quest info for the active quest
+	fp = fopen("./files/ActiveQuest_save.txt", "w");
+	if (active_quest != NULL)
+		active_quest->saveQuest(fp);
 	fclose(fp);
 }
 void party::loadParty()
@@ -1087,7 +1255,12 @@ void party::loadParty()
 	
 	fp = fopen("./files/Party_save.txt", "r");
 	assert(fp != NULL);
-	fscanf(fp, " %d %d ", &gold, &num_plys);
+	int qst = 0;
+	fscanf(fp, " %d %d %d ", &gold, &num_plys, &qst);
+	if (qst == 0)
+		active_quest == NULL;
+	else
+		active_quest = getQuest(qst);
 	fclose(fp);
 
 	fp = fopen("./files/Character_save.txt", "r");
@@ -1116,6 +1289,13 @@ void party::loadParty()
 	}
 	fclose(fp);
 	inventoryFull();
+	if ((qst != 0)&&(active_quest != NULL))
+	{
+		fp = fopen("./files/ActiveQuest_save.txt", "r");
+		assert(fp != NULL);
+		active_quest->loadQuest(fp);
+		fclose(fp);
+	}
 }
 
 

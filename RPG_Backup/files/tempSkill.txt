@@ -1,2 +1,2 @@
-11	6 'Crippling Shot'	1	75
+10	5 'All-Ice 1'			1	50	6
  

@@ -34,4 +34,5 @@ class battle
 			void resetEnemies();
 		void battleAwards();
 			void saveStats();
+		void checkQuest();
 };

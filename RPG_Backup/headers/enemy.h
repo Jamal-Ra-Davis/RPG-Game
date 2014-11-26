@@ -37,6 +37,8 @@ class enemy
 			void setLevel(int LEVEL);
 			void resetSkillLst();
 
+			int getID()
+				{return id;}
 			char* getName()
 				{return name;}
 			int getNum_skills()

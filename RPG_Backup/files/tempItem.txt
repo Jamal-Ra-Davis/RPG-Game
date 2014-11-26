@@ -1,2 +1,2 @@
-2  0 'Mid-Potion'				1 99 0 250  150
+9  4 'Staff of BookSmarts'	1 99 4 1500 0	0	0	0	0	10	4
  

@@ -31,6 +31,8 @@ class shop
 
 		int getID()
 			{return id;}
+        void setID(int id_)
+            {id = id_;}
 		char* getName()
 			{return name;}
 //		int getSize()

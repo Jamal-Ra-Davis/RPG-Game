@@ -4,6 +4,8 @@
 #include "../headers/item.h"
 #include "../headers/Safe_Input.h"
 #include "../headers/party.h"
+#include "../headers/quest.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,6 +42,7 @@ void battle::set_enmLvl()
 */
 int battle::battleLoop()//1. Party Dead; 0. Players Win 
 {
+	int chk = -1;
 	while(1)
 	{
 		//Display battle info
@@ -79,17 +82,27 @@ int battle::battleLoop()//1. Party Dead; 0. Players Win
 		resetPlayers();
 		int check = playerPhase();
 		if (check != -1)
-			return check;
+		{
+			chk = check;
+			break;
+			//return check;
+		}
 
 		printf("\n");
 
 		resetEnemies();
 		check = enemyPhase();
 		if (check != -1)
-			return check;
+		{
+			chk = check;
+			break;
+			//return check;
+		}
 
 		turn_cnt++;
 	}
+	checkQuest();
+	return chk;
 }
 int battle::checkVictory()//1 = Players lost, -1 = Neither lost, 0 = Players win
 {
@@ -445,6 +458,8 @@ void battle::battleAwards()
 	cout << "Victory!!" << endl << "Recieving battle rewards..." << endl;
 	int exp_sum = 0;
 	int gold_sum = 0;
+	
+
 	for (int i=0; i<num_enms; i++)
 	{
 		exp_sum += enm_lst[i].getExp();
@@ -487,3 +502,15 @@ void battle::saveStats()
 	}
 	fclose(fp);
 }
+void battle::checkQuest()
+{
+	quest *qst = characters->getActiveQuest();
+	if (qst == NULL)
+		return;
+	qst->checkQuestRequirements(enm_lst, num_enms);
+}
+
+
+
+
+

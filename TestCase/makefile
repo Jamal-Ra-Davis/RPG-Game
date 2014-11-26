@@ -1,7 +1,8 @@
 OBJS = ./src/enemy.o ./src/player.o ./src/battle.o ./src/Safe_Input.o\
 		 ./src/skill.o ./src/item.o ./src/FileFunctions.o ./src/Main.o\
 		 ./src/areas.o ./src/party.o ./src/game_hub.o ./src/shop.o\
-		 ./src/inn.o ./src/Inventory.o ./src/home.o 
+		 ./src/inn.o ./src/Inventory.o ./src/home.o ./src/quest.o\
+		 ./src/questHall.o 
 CC = g++
 DEBUG = -g
 CFLAGS = -Wall -c $(DEBUG)
@@ -20,7 +21,7 @@ player.o: $(DS)player.cpp $(DH)player.h $(DH)enemy.h $(DH)skill.h $(DH)item.h\
 	$(CC) $(CFLAGS) $(DS)player.cpp -o $(DS)player.o
 
 battle.o: $(DS)battle.cpp $(DH)battle.h $(DH)enemy.h $(DH)player.h $(DH)item.h\
-			 $(DH)Safe_Input.h $(DH)party.h
+			 $(DH)Safe_Input.h $(DH)party.h $(DH)quest.h
 	$(CC) $(CFLAGS) $(DS)battle.cpp -o $(DS)battle.o
 
 Safe_Input.o: $(DS)Safe_Input.cpp $(DH)Safe_Input.h
@@ -41,11 +42,12 @@ areas.o: $(DS)areas.cpp $(DH)areas.h $(DH)Safe_Input.h $(DH)enemy.h\
 	$(CC) $(CFLAGS) $(DS)areas.cpp -o $(DS)areas.o 
 
 party.o: $(DS)party.cpp $(DH)party.h $(DH)player.h $(DH)skill.h $(DH)item.h\
-			$(DH)Safe_Input.h
+			$(DH)Safe_Input.h $(DH)quest.h
 	$(CC) $(CFLAGS) $(DS)party.cpp -o $(DS)party.o
 
 game_hub.o: $(DS)game_hub.cpp $(DH)game_hub.h $(DH)party.h $(DH)areas.h\
-				$(DH)Safe_Input.h $(DH)player.h $(DH)shop.h $(DH)inn.h $(DH)home.h
+				$(DH)Safe_Input.h $(DH)player.h $(DH)shop.h $(DH)inn.h $(DH)home.h\
+				$(DH)quest.h $(DH)questHall.h
 	$(CC) $(CFLAGS) $(DS)game_hub.cpp -o $(DS)game_hub.o
 
 shop.o: $(DS)shop.cpp $(DH)shop.h $(DH)Safe_Input.h $(DH)party.h $(DH)item.h\
@@ -61,6 +63,13 @@ Inventory.o: $(DS)Inventory.cpp $(DH)Inventory.h $(DH)item.h $(DH)Safe_Input.h
 home.o: $(DS)home.cpp $(DH)home.h $(DH)player.h $(DH)Inventory.h $(DH)party.h\
 		  $(DH)Safe_Input.h $(DH)item.h
 	$(CC) $(CFLAGS) $(DS)home.cpp -o $(DS)home.o
+
+quest.o: $(DS)quest.cpp $(DH)quest.h $(DH)enemy.h $(DH)item.h
+	$(CC) $(CFLAGS) $(DS)quest.cpp -o $(DS)quest.o
+
+questHall.o: $(DS)questHall.cpp $(DH)questHall.h $(DH)quest.h $(DH)party.h\
+				 $(DS)Safe_Input.h $(DH)player.h
+	$(CC) $(CFLAGS) $(DS)questHall.cpp -o $(DS)questHall.o
 
 Main.o: $(DS)Main.cpp $(DH)battle.h $(DH)enemy.h $(DH)player.h $(DH)item.h\
 		  $(DH)areas.h  $(DH)party.h  $(DH)game_hub.h
