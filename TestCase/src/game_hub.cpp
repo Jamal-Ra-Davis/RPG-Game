@@ -20,7 +20,7 @@ game_hub::game_hub()
 
 	printf("party gold: %d, party max size: %d\n", Team->getGold(), Team->getMaxPartySize());	
 
-	num_areas = 4;
+	num_areas = 5;
 	active_areas = 0;
 
 	Dungeons = new areas*[num_areas];
@@ -32,7 +32,12 @@ game_hub::game_hub()
 	Dungeons[1]->setArea("Snow-covered Mountains", 2, Team);
 	Dungeons[2]->setArea("Lava Hell-scape", 3, Team);
 	Dungeons[3]->setArea("File Dungeon", 6, Team);
-
+    
+    Dungeons[4]->loadArea("./files/Dungeons/01_Grassy_Plains.txt", Team);
+    /*
+    delete Dungeons[4];
+    Dungeons[4] = getArea(1, Team);
+    */
 	rand_dungeon = NULL;
 
 	num_shops = getShopRange();
@@ -148,31 +153,6 @@ void game_hub::gameLoop()
 		{
 			case 1://Free Exploration
 			{
-				/*
-				printf("Chooses dungeon to go to:\n");
-				int dun_sel = getSel("1. Babby's first dungeon", "2. Random Dungeon", "3. Cancel");
-				switch(dun_sel)
-				{
-					case 1:
-					{
-						Dungeons[0]->dungeon_loop();
-						break;
-					}
-					case 2:
-					{
-						rand_dungeon = new areas;
-						rand_dungeon->setArea("Random Dungeon", 4, Team);
-						rand_dungeon->dungeon_loop();
-						delete rand_dungeon;
-						rand_dungeon = NULL;
-						break;
-					}
-					case 3:
-					{
-						break;
-					}
-				}
-				*/
 				areaMenu();	
 				break;
 			}
@@ -287,7 +267,10 @@ void game_hub::gameLoop()
 			}	
 		}
 		if (Team->checkGameOver())
+        {
+            printf("Game Over...");
 			in_town = false;	
+        }
 
 	}	
 }
@@ -368,7 +351,8 @@ void game_hub::areaMenu()
 				if (sel < active_areas+1)
 				{
 					sel--;
-					Dungeons[sel]->dungeon_loop();
+					//Dungeons[sel]->dungeon_loop();
+                    Dungeons[sel]->enter_area();
 					areaMenu = false;
 				}
 				else
@@ -379,7 +363,8 @@ void game_hub::areaMenu()
 			{
 				rand_dungeon = new areas;
 				rand_dungeon->setArea("Random Dungeon", 4, Team);
-				rand_dungeon->dungeon_loop();
+				//rand_dungeon->dungeon_loop();
+                rand_dungeon->enter_area();
 				areaMenu = false;
 				delete rand_dungeon;
 				rand_dungeon = NULL;

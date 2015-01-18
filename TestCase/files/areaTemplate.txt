@@ -1,0 +1,32 @@
+20              //Size  **Consider having 2 dimension variables to allow for non-square dungeons
+9 0             //Start row, start col
+10 13           //Boss row, boss col
+35              //Treasure rate(Chance tile will contain treasure tile) **Maybe think about array that has treasure item IDs per dungeon
+33              //encounter rate
+20              //Monster level
+5               //Level Range (+/- this number)
+3               //Number of monsters
+1 2 3           //Monster IDs
+25              //Boss level
+1               //Number of boss monsters  **not in yet(doesn't have to be member variable, can just be used to set up boss array)
+8               //Boss monster IDs         **not in yet(doesn't have to be member variable, can just be used to set up boss array)
+0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1
+0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  1
+0  1  1  1  1  1  1  1  1  0  1  1  1  1  1  1  1  1  1  1
+0  1  0  0  1  0  0  0  0  0  1  0  0  0  0  0  0  0  0  1
+1  1  1  0  1  0  1  1  1  0  1  1  1  1  1  1  1  1  0  1
+1  0  1  0  1  0  0  0  1  0  1  0  0  0  0  0  0  1  0  1
+1  0  1  0  1  1  1  1  1  0  1  0  0  0  0  1  0  1  0  1
+0  0  1  0  0  0  0  0  0  0  1  1  1  1  0  1  0  1  0  1
+1  1  1  1  1  1  1  1  1  0  0  0  0  1  0  1  0  1  0  1
+0  0  0  1  0  0  0  0  1  1  1  0  0  1  0  1  0  1  0  1
+0  1  0  1  1  1  1  0  0  0  1  0  1  0  0  1  0  1  0  1
+0  1  0  1  0  0  0  0  1  0  1  0  1  1  1  1  0  1  0  1
+0  1  0  1  0  1  1  1  1  1  1  1  1  0  1  0  0  1  0  1
+0  1  0  1  0  0  0  0  1  0  1  0  1  0  1  0  0  1  0  1
+0  1  0  1  1  1  1  0  1  0  1  0  1  0  1  0  0  1  0  1
+0  1  0  1  0  0  0  0  1  0  0  0  1  0  1  0  0  1  0  1
+0  1  0  1  1  1  1  1  1  1  1  1  1  0  1  0  0  1  0  1
+0  1  0  0  0  0  0  0  0  1  0  0  0  0  1  0  0  0  0  1
+0  1  1  1  1  1  1  1  1  1  0  1  1  1  1  1  1  1  1  1

@@ -40,7 +40,7 @@ void battle::set_enmLvl()
 	}
 }
 */
-int battle::battleLoop()//1. Party Dead; 0. Players Win 
+int battle::battleLoop()//2. Party Fled, 1. Party Dead; 0. Players Win 
 {
 	int chk = -1;
 	while(1)
@@ -246,10 +246,10 @@ int battle::playerPhase()
 								case 2://target single enemy
 								{
 									for (int j=0; j<num_enms; j++)
-                           {
-                              printf("%d. %s\n", j+1, enm_lst[j].getName());
-                           }
-                           target = getSel(num_enms);
+                                    {
+                                        printf("%d. %s\n", j+1, enm_lst[j].getName());
+                                    }
+                                    target = getSel(num_enms);
 									break;
 								}
 								default://1. Target all players, 3. Target all enemies
@@ -266,7 +266,7 @@ int battle::playerPhase()
 							i--;
 						}
 					}
-					else
+                    else//Failed skillPass function
 					{
 						printf("Invalid skill selection...\n");
 						i--;
@@ -380,13 +380,15 @@ int battle::enemyPhase()
 	int check=-1;
 	for (int i=0; i<num_enms; i++)
 	{
-		if (enm_lst[i].isDead())
+		if (enm_lst[i].isDead())//If Enemy is dead, skip thier turn
 			continue;
 		int act_sel = rand()%4;
 		
+        //No idea what this spc variable is supposed to be used for, this condition NEVER happens
 		int spc = rand()%100;
 		if (spc > 99)
 			act_sel = 2;
+
 		switch(act_sel)
 		{
 			case 0://attack

@@ -82,7 +82,7 @@ void killQuest::checkQuestRequirements(enemy *enm_lst, int numE)
 
 	for (int i=0; i<numE; i++)
 	{
-		if (enm_lst[i].getID() == enemyID)
+		if ((enm_lst[i].getID() == enemyID)&&(enm_lst[i].isDead()))
 		{
 			kills++;		
 		}
