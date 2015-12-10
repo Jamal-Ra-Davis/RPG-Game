@@ -367,7 +367,7 @@ void healthPotion::use(player **ply_lst, int numP, int targ)
 	else
 		printf("%s out of stock, cannot use.\n", name);
 }
-void healthPotion::use(player **ply_lst, int numP, enemy *enm_lst, int numE, 
+void healthPotion::use(player **ply_lst, int numP, enemy **enm_lst, int numE, 
                        int targ)
 {
 	if (stock > 0)
@@ -402,7 +402,7 @@ void manaPotion::use(player **ply_lst, int numP, int targ)
 	else
 		printf("%s out of stock, cannot use.\n", name);
 }
-void manaPotion::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+void manaPotion::use(player **ply_lst, int numP, enemy **enm_lst, int numE,
 							int targ)
 {
 	if (stock > 0)
@@ -431,12 +431,12 @@ void grenade::use(player **ply_lst, int numP, int targ)
 {
 	printf("Cannot use %s outside of battle.\n", name);
 }
-void grenade::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+void grenade::use(player **ply_lst, int numP, enemy **enm_lst, int numE,
 						int targ)
 {
 	if (stock > 0)
 	{
-		enm_lst[targ].takeDamage(damage_pts);
+		enm_lst[targ]->takeDamage(damage_pts);
 		stock--;
 	}
 	else
@@ -466,7 +466,7 @@ void revive::use(player **ply_lst, int numP, int targ)
    else
       printf("%s out of stock, cannot use.\n", name);
 }
-void revive::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+void revive::use(player **ply_lst, int numP, enemy **enm_lst, int numE,
 					  int targ)
 {
    if (stock > 0)
@@ -495,7 +495,7 @@ void equipment::use(player **ply_lst, int numP, int targ)
 {
 	printf("%s is a piece of equipment and cannot be used\n", name);
 }
-void equipment::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+void equipment::use(player **ply_lst, int numP, enemy **enm_lst, int numE,
 						  int targ)
 {
 	printf("%s is a piece of equipment and cannot be used\n", name);
@@ -556,7 +556,7 @@ void skillTeach::use(player **ply_lst, int numP, int targ)
 	else
 		printf("%s out of stock, cannot use.\n", name);
 }
-void skillTeach::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+void skillTeach::use(player **ply_lst, int numP, enemy **enm_lst, int numE,
 							int targ)
 {
 	printf("Cannot use %s in battle...\n", name);	

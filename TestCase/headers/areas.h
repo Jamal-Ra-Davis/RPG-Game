@@ -37,16 +37,17 @@ class areas
 	
     //Battle Info (The enemies you fight in the battle, how many are fought, and their levels)
 	int num_enm;
-	enemy *enms_fought;
+//	enemy *enms_fought;
     enemy **random_encounter;
 	int enm_level;//Not being used apparently
 
     //Boss information
-	enemy *boss;
+//	enemy **boss;
 	int boss_level;
-    //int boss_encouter_size;
-    //enemy **boss_encounter;
-    
+    int boss_encounter_size;
+    enemy **boss_encounter;
+    int *boss_IDs; 
+
     //Variable to keep track of player party
 	party *characters;	
 
@@ -57,6 +58,7 @@ class areas
 		areas(char*, int, party*);
         areas(char*,party*);
 		~areas();
+        void nullPointers();
 		void setArea(char*, int, party*);
         void loadArea(char*, party*);
 		void map_disp();
@@ -71,6 +73,7 @@ class areas
 		int change_loc(); 
 		void examine_room();//Need to set it up so it actually gives you real items, not just a message
 		bool enemy_encounter();
+        void resetBoss();
 		void dungeon_loop();
 		void random_dungeon();
 		void random_dungeon2();

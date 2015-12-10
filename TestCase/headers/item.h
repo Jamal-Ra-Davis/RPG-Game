@@ -38,7 +38,7 @@ class item
 		void decrementStock();
 		void removeStock(int);
 		virtual void use(player **ply_lst, int numP, int targ) =0;
-		virtual void use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+		virtual void use(player **ply_lst, int numP, enemy **enm_lst, int numE,
 							  int targ) =0;
 		virtual void printInfo() =0;
 		//virtual void set_pts(int) =0;
@@ -50,7 +50,7 @@ class healthPotion: public item
 		int heal_pts;
 	public:
 		void use(player **ply_lst, int numP, int targ);
-		void use(player **ply_lst, int numP, enemy *enm_lst, int numE, int targ);
+		void use(player **ply_lst, int numP, enemy **enm_lst, int numE, int targ);
 		void printInfo();
 		void set_pts(int);
 };
@@ -61,7 +61,7 @@ class manaPotion: public item
 		int mana_pts;
 	public:
 		void use(player **ply_lst, int numP, int targ);
-		void use(player **ply_lst, int numP, enemy *enm_lst, int numE, int targ);
+		void use(player **ply_lst, int numP, enemy **enm_lst, int numE, int targ);
 		void printInfo();
 		void set_pts(int);
 };
@@ -72,7 +72,7 @@ class grenade: public item
 		int damage_pts;
 	public:
 		void use(player **ply_lst, int numP, int targ);
-		void use(player **ply_lst, int numP, enemy *enm_lst, int numE, int targ);
+		void use(player **ply_lst, int numP, enemy **enm_lst, int numE, int targ);
 		void printInfo();
 		void set_pts(int);
 };
@@ -83,7 +83,7 @@ class revive: public item
       int revive_pts;
    public:
       void use(player **ply_lst, int numP, int targ);
-      void use(player **ply_lst, int numP, enemy *enm_lst, int numE, int targ);
+      void use(player **ply_lst, int numP, enemy **enm_lst, int numE, int targ);
 		void printInfo();
       void set_pts(int);
 };
@@ -95,7 +95,7 @@ class equipment: public item
 		int health, mp, att, def, mag, mdef;
 	public:
       void use(player **ply_lst, int numP, int targ);
-      void use(player **ply_lst, int numP, enemy *enm_lst, int numE, int targ);
+      void use(player **ply_lst, int numP, enemy **enm_lst, int numE, int targ);
 		void printInfo();
 		void set_pts(int, int, int, int, int, int, int);		
 		int getEquipType()
@@ -121,7 +121,7 @@ class skillTeach: public item
 		int skill_id;
 	public:
 		void use(player **ply_lst, int numP, int targ);
-		void use(player **ply_lst, int numP, enemy *enm_lst, int numE, int targ);
+		void use(player **ply_lst, int numP, enemy **enm_lst, int numE, int targ);
 		void printInfo();
 		void set_ID(int);
 };

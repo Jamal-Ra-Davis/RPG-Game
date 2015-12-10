@@ -164,6 +164,13 @@ bool enemy::isDead()
 	}
 	return dead;
 }
+void enemy::resetEnemy()
+{
+    dead = false;
+    Health = Max_Health;
+    mp = Max_mp;
+    statusReset();
+}
 int enemy::takeDamage(int damage)
 {
 	if (dead)
@@ -256,7 +263,7 @@ void enemy::recieveSkill(int skill_id)
 	if (i == num_skills)
 		printf("Skill list full, skill discarded\n");
 }
-void enemy::useSkillBtl(int skl_idx, player **ply_lst, int numP, enemy *enm_lst,
+void enemy::useSkillBtl(int skl_idx, player **ply_lst, int numP, enemy **enm_lst,
 								int numE, int caster, int targ)
 {
 	printf("%s used %s\n", name, skill_lst[skl_idx]->get_name());
@@ -271,7 +278,13 @@ bool enemy::skillPass(int idx)
 	else
 		return false;		
 }
+bool enemy::hasSkillMP(int idx)
+{
+    if (!skillPass(idx))
+        false;
 
+    return (mp >= skill_lst[idx]->get_MPcost()); 
+}
 
 
 

@@ -297,7 +297,7 @@ void HealSpell::use(player **ply_lst, int numP, int caster, int targ)
              name);
    }
 }
-void HealSpell::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+void HealSpell::use(player **ply_lst, int numP, enemy **enm_lst, int numE,
                     int caster, int targ)
 {
 	printf("Target recieved: %d\n", targ);
@@ -330,21 +330,21 @@ void AttSpell::use(player **ply_lst, int numP, int caster, int targ)
 {
    printf("%s cannot  be used outside of battle\n", name);
 }
-void AttSpell::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+void AttSpell::use(player **ply_lst, int numP, enemy **enm_lst, int numE,
                     int caster, int targ)
 {
    if (ply_lst[caster]->getMP() >= mp_cost)
    {
 		printf("**DEBUG** Pmag = %d, Emdef = %d, att_pts = %d\n", ply_lst[caster]->getMag_btl(),
-				 enm_lst[targ].getMdef_btl(), att_pts);
+				 enm_lst[targ]->getMdef_btl(), att_pts);
 		int mag_p = ply_lst[caster]->getMag_btl();
-		int mdef_e = enm_lst[targ].getMdef_btl();
+		int mdef_e = enm_lst[targ]->getMdef_btl();
 		
-//		int dam = (int)((ply_lst[caster]->getMag_btl()/((float)(enm_lst[targ].getMdef_btl())))*att_pts);
+//		int dam = (int)((ply_lst[caster]->getMag_btl()/((float)(enm_lst[targ]->getMdef_btl())))*att_pts);
 		float dam = (mag_p - mdef_e)/((float)(mag_p + mdef_e));
 		dam = 3*dam*(mag_p/4.0) + mag_p;
 		dam *= att_pts;
-      enm_lst[targ].takeDamage((int)dam);
+      enm_lst[targ]->takeDamage((int)dam);
       ply_lst[caster]->removeMP(mp_cost);
    }
    else
@@ -369,7 +369,7 @@ void AttSpellAll::use(player **ply_lst, int numP, int caster, int targ)
 {  
    printf("%s cannot  be used outside of battle\n", name);
 }
-void AttSpellAll::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+void AttSpellAll::use(player **ply_lst, int numP, enemy **enm_lst, int numE,
                     int caster, int targ)
 {  
    if (ply_lst[caster]->getMP() >= mp_cost)
@@ -377,19 +377,19 @@ void AttSpellAll::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
 		bool allDead = true;
 		for (int i=0; i<numE; i++)
 		{
-			if (enm_lst[i].isDead() == false)
+			if (enm_lst[i]->isDead() == false)
 			{
 				printf("**DEBUG** Pmag = %d, Emdef = %d, att_pts = %d\n", ply_lst[caster]->getMag_btl(),
-						 enm_lst[i].getMdef_btl(), att_pts);
+						 enm_lst[i]->getMdef_btl(), att_pts);
 				allDead = false;
 				int mag_p = ply_lst[caster]->getMag_btl();
-				int mdef_e = enm_lst[i].getMdef_btl();
+				int mdef_e = enm_lst[i]->getMdef_btl();
 
-//				int dam = (int)((ply_lst[caster]->getMag_btl()/((float)(enm_lst[i].getMdef_btl())))*att_pts);
+//				int dam = (int)((ply_lst[caster]->getMag_btl()/((float)(enm_lst[i]->getMdef_btl())))*att_pts);
 				float dam = (mag_p - mdef_e)/((float)(mag_p + mdef_e));
 				dam = 3*dam*(mag_p/4.0) + mag_p;
 				dam *= att_pts;
-      		enm_lst[i].takeDamage((int)dam);
+      		enm_lst[i]->takeDamage((int)dam);
 			}
 		}
 		if (allDead == false)
@@ -438,7 +438,7 @@ void RevSpell::use(player **ply_lst, int numP, int caster, int targ)
              name);
    }
 }
-void RevSpell::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+void RevSpell::use(player **ply_lst, int numP, enemy **enm_lst, int numE,
 						 int caster, int targ)
 {
    if (ply_lst[caster]->getMP() >= mp_cost)
@@ -478,30 +478,30 @@ void MpDrain::use(player **ply_lst, int numP, int caster, int targ)
 {
 	printf("%s cannot  be used outside of battle\n", name);
 }
-void MpDrain::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+void MpDrain::use(player **ply_lst, int numP, enemy **enm_lst, int numE,
 						int caster, int targ)
 {
-	if (enm_lst[targ].isDead())
+	if (enm_lst[targ]->isDead())
 	{
 		printf("%s is dead, cannot use %s. *DEBUG: Happening inside use func\n", 
-				 enm_lst[targ].getName(), name);
+				 enm_lst[targ]->getName(), name);
 		return;
 	}
 	if (ply_lst[caster]->getMP() >= mp_cost)
 	{
 		int mag_p = ply_lst[caster]->getMag_btl();
-		int mdef_e = enm_lst[targ].getMdef_btl();
+		int mdef_e = enm_lst[targ]->getMdef_btl();
 
-//    int dam = (int)((ply_lst[caster]->getMag_btl()/((float)(enm_lst[targ].getMdef_btl())))*att_pts);
+//    int dam = (int)((ply_lst[caster]->getMag_btl()/((float)(enm_lst[targ]->getMdef_btl())))*att_pts);
 		float drain = (mag_p - mdef_e)/((float)(mag_p + mdef_e));
 		drain = 3*drain*(mag_p/4.0) + mag_p;
 		drain *= drain_pts;
 		int drain_dam = (int)drain;
 		
-		int temp_mp = enm_lst[targ].getMP();
+		int temp_mp = enm_lst[targ]->getMP();
 		if (drain_dam > temp_mp)
 			drain_dam = temp_mp;
-		enm_lst[targ].removeMP(drain_dam);
+		enm_lst[targ]->removeMP(drain_dam);
 		ply_lst[caster]->removeMP(mp_cost);
 		ply_lst[caster]->restoreMP(drain_dam);
 	}
@@ -543,7 +543,7 @@ void MpGift::use(player **ply_lst, int numP, int caster, int targ)
 				 name);
 	}
 }
-void MpGift::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+void MpGift::use(player **ply_lst, int numP, enemy **enm_lst, int numE,
 					  int caster, int targ)
 {
 	if (ply_lst[caster]->getMP() >= mp_cost)
@@ -580,19 +580,19 @@ void PhySkill::use(player **ply_lst, int numP, int caster, int targ)
 {
 	printf("%s cannot  be used outside of battle\n", name);
 }
-void PhySkill::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+void PhySkill::use(player **ply_lst, int numP, enemy **enm_lst, int numE,
 						 int caster, int targ)
 {
 	if (ply_lst[caster]->getMP() >= mp_cost)
 	{
 		int att_p = ply_lst[caster]->getAtt_btl();
-		int def_e = enm_lst[targ].getDef_btl();
+		int def_e = enm_lst[targ]->getDef_btl();
 
-//    int dam = (int)((ply_lst[caster]->getMag_btl()/((float)(enm_lst[targ].getMdef_btl())))*att_pts);
+//    int dam = (int)((ply_lst[caster]->getMag_btl()/((float)(enm_lst[targ]->getMdef_btl())))*att_pts);
 		float dam = (att_p - def_e)/((float)(att_p + def_e));
 		dam = 3*dam*(att_p/4.0) + att_p;
 		dam *= phys_pts;
-		enm_lst[targ].takeDamage((int)dam);
+		enm_lst[targ]->takeDamage((int)dam);
 		ply_lst[caster]->removeMP(mp_cost);
 	}
 	else	
@@ -620,19 +620,19 @@ void E_AttSpell::use(player **ply_lst, int numP, int caster, int targ)
 {
    printf("%s cannot  be used outside of battle\n", name);
 }
-void E_AttSpell::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+void E_AttSpell::use(player **ply_lst, int numP, enemy **enm_lst, int numE,
                     int caster, int targ)
 {
-   if (enm_lst[caster].getMP() >= mp_cost)
+   if (enm_lst[caster]->getMP() >= mp_cost)
    {
-//		int dam = (int)((enm_lst[caster].getMag_btl()/((float)(ply_lst[targ]->getMdef_btl())))*att_pts);
+//		int dam = (int)((enm_lst[caster]->getMag_btl()/((float)(ply_lst[targ]->getMdef_btl())))*att_pts);
 //      ply_lst[targ]->takeDamage(dam);
-//      enm_lst[caster].removeMP(mp_cost);
+//      enm_lst[caster]->removeMP(mp_cost);
 //---------------------------------------------
 
-		printf("**DEBUG** Emag = %d, Pmdef = %d, att_pts = %d\n", enm_lst[caster].getMag_btl(),
+		printf("**DEBUG** Emag = %d, Pmdef = %d, att_pts = %d\n", enm_lst[caster]->getMag_btl(),
              ply_lst[targ]->getMdef_btl(), att_pts);
-		int mag_e = enm_lst[caster].getMag_btl();
+		int mag_e = enm_lst[caster]->getMag_btl();
 		int mdef_p = ply_lst[targ]->getMdef_btl();
 
 		float dam = (mag_e - mdef_p)/((float)(mag_e + mdef_p));
@@ -640,11 +640,11 @@ void E_AttSpell::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
 		dam *= att_pts;
 
 		ply_lst[targ]->takeDamage(dam);
-		enm_lst[caster].removeMP(mp_cost);
+		enm_lst[caster]->removeMP(mp_cost);
    }
    else
    {
-      printf("%s does not have enough MP to cast %s\n", enm_lst[caster].getName(),
+      printf("%s does not have enough MP to cast %s\n", enm_lst[caster]->getName(),
              name);
    }
 }
@@ -657,25 +657,25 @@ void E_AttSpellAll::use(player **ply_lst, int numP, int caster, int targ)
 {
    printf("%s cannot  be used outside of battle\n", name);
 }
-void E_AttSpellAll::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+void E_AttSpellAll::use(player **ply_lst, int numP, enemy **enm_lst, int numE,
                     int caster, int targ)
 {  
-	if (enm_lst[caster].getMP() >= mp_cost)
+	if (enm_lst[caster]->getMP() >= mp_cost)
    {
       bool allDead = true;
       for (int i=0; i<numP; i++)
       {  
          if (ply_lst[i]->isDead() == false)
          {
-				printf("**DEBUG** Emag = %d, Pmdef = %d, att_pts = %d\n", enm_lst[caster].getMag_btl(),
+				printf("**DEBUG** Emag = %d, Pmdef = %d, att_pts = %d\n", enm_lst[caster]->getMag_btl(),
 						 ply_lst[i]->getMdef_btl(), att_pts);
             allDead = false;
-//            int dam = (int)((enm_lst[caster].getMag_btl()/((float)(ply_lst[i]->getMdef_btl())))*att_pts);
+//            int dam = (int)((enm_lst[caster]->getMag_btl()/((float)(ply_lst[i]->getMdef_btl())))*att_pts);
 //            ply_lst[i]->takeDamage(dam);
 
 				//----------------------------
 
-				int mag_e = enm_lst[caster].getMag_btl();
+				int mag_e = enm_lst[caster]->getMag_btl();
 				int mdef_p = ply_lst[i]->getMdef_btl();
 
 				float dam = (mag_e - mdef_p)/((float)(mag_e + mdef_p));
@@ -686,13 +686,13 @@ void E_AttSpellAll::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
          }
       } 
       if (allDead == false)
-         enm_lst[caster].removeMP(mp_cost);
+         enm_lst[caster]->removeMP(mp_cost);
       else
-         printf("All enemies are dead\n");
+         printf("All players are dead\n");
    }
    else
    {
-      printf("%s does not have enough MP to cast %s\n", enm_lst[caster].getName(),
+      printf("%s does not have enough MP to cast %s\n", enm_lst[caster]->getName(),
              name);
    }
 }
@@ -703,10 +703,10 @@ void E_CripplingShot::use(player **ply_lst, int numP, int caster, int targ)
 {
 	printf("%s cannot  be used outside of battle\n", name);
 }
-void E_CripplingShot::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+void E_CripplingShot::use(player **ply_lst, int numP, enemy **enm_lst, int numE,
 								  int caster, int targ)
 {
-	if (enm_lst[caster].getMP() >= mp_cost)
+	if (enm_lst[caster]->getMP() >= mp_cost)
 	{
 		bool allDead = true;
 		for (int i=0; i<numP; i++)
@@ -719,13 +719,13 @@ void E_CripplingShot::use(player **ply_lst, int numP, enemy *enm_lst, int numE,
 			}
 		}
 		if (allDead == false)
-			enm_lst[caster].removeMP(mp_cost);
+			enm_lst[caster]->removeMP(mp_cost);
 		else
-			printf("All enemies are dead\n");
+			printf("All players are dead\n");
 	}
 	else
 	{
-		printf("%s does not have enough MP to cast %s\n", enm_lst[caster].getName(),
+		printf("%s does not have enough MP to cast %s\n", enm_lst[caster]->getName(),
 				 name);
 	}
 }

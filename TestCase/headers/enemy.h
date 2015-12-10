@@ -76,7 +76,7 @@ class enemy
 
 			bool isDead();//Check if health is < 0, sets and returns death status
 
-
+            void resetEnemy();
 			int takeDamage(int);//Returns 1 if you try to damage when dead, 0 if things work right
 			int restoreHealth(int);//Returns 1 if you try to heal when dead, 0 if things work right
 			int restoreMP(int);//Returns 1 if you try to restore mp when dead, 0 if successful
@@ -88,8 +88,9 @@ class enemy
 			void initSkill();
 			void recieveSkill(int);
 
-			void useSkillBtl(int skl_idx, player **ply_lst, int numP, enemy *enm_lst,
+			void useSkillBtl(int skl_idx, player **ply_lst, int numP, enemy **enm_lst,
 								  int numE, int caster, int targ);
 			bool skillPass(int);
+            bool hasSkillMP(int);
 
 };

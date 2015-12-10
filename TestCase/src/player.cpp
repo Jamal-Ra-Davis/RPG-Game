@@ -650,6 +650,20 @@ void player::printAllSkills()
 	}
 	printf("\n");
 }
+char* player::getBattleSkillName(int skill_idx)
+{
+    if (!skillPass(skill_idx)) 
+        return NULL;
+
+    return skill_lst[skill_idx]->get_name();
+}
+bool player::hasSkillMP(int skill_idx)
+{
+    if (!skillPass(skill_idx))
+        return false;
+
+    return (mp >= skill_lst[skill_idx]->get_MPcost());
+}
 void player::useSkill(int skl_idx, player **ply_lst, int numP, int caster, int targ)
 {
 	if (skill_lst[skl_idx] == NULL)
@@ -665,7 +679,7 @@ void player::useSkill(int skl_idx, player **ply_lst, int numP, int caster, int t
 	printf("%s used %s\n", name, skill_lst[skl_idx]->get_name());
 	skill_lst[skl_idx]->use(ply_lst, numP, caster, targ);
 }
-void player::useSkillBtl(int skl_idx, player **ply_lst, int numP, enemy *enm_lst,
+void player::useSkillBtl(int skl_idx, player **ply_lst, int numP, enemy **enm_lst,
 								 int numE, int caster, int targ)
 {
 	if (skill_lst[skl_idx] == NULL)

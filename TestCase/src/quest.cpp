@@ -77,12 +77,12 @@ void killQuest::checkQuestRequirements(item **inv, int size)
 {
 	//Does nothing
 }
-void killQuest::checkQuestRequirements(enemy *enm_lst, int numE)
+void killQuest::checkQuestRequirements(enemy **enm_lst, int numE)
 {
 
 	for (int i=0; i<numE; i++)
 	{
-		if ((enm_lst[i].getID() == enemyID)&&(enm_lst[i].isDead()))
+		if ((enm_lst[i]->getID() == enemyID)&&(enm_lst[i]->isDead()))
 		{
 			kills++;		
 		}
@@ -193,7 +193,7 @@ void fetchQuest::checkQuestRequirements(item **inv, int size)
 		reqs_met = false;
 	}
 }
-void fetchQuest::checkQuestRequirements(enemy *enm_lst, int numE)
+void fetchQuest::checkQuestRequirements(enemy **enm_lst, int numE)
 {
 	//Does nothing
 }

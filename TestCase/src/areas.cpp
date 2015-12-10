@@ -68,6 +68,7 @@ areas::areas(char* filename, party* team)
 }
 void areas::setArea(char* NAME, int ID, party *party_in)
 {
+    nullPointers();
 	sprintf(name, "%s", NAME);
 	id = ID;
 	srand(time(NULL));
@@ -83,9 +84,15 @@ void areas::setArea(char* NAME, int ID, party *party_in)
 	monster_lvl = 5;
 
 //	boss = NULL;
-	boss = getEnemy(5);
+    boss_encounter_size = 1;
+    boss_IDs = (int*)malloc(boss_encounter_size*sizeof(int));
+    
+    //You know encouter size is 1, so this is ok
+    boss_IDs[0] = 5;
+    boss_encounter = new enemy*[boss_encounter_size];
+	boss_encounter[0] = getEnemy(boss_IDs[0]);
 
-    enms_fought = NULL;
+//    enms_fought = NULL;
     random_encounter = NULL;
 
 	switch(ID)
@@ -229,7 +236,7 @@ void areas::setArea(char* NAME, int ID, party *party_in)
 		}
 	}
 	lvl_range = (int)(monster_lvl*0.2);	
-	boss->setLevel(boss_level);
+	boss_encounter[0]->setLevel(boss_level);
 }
 areas::~areas()
 {
@@ -241,10 +248,19 @@ areas::~areas()
 	free(movement);
 	free(treasure);
 	free(area_monsters);
-	if (boss != NULL)
-		delete boss;
+	if (boss_encounter != NULL)
+    {
+        for (int i=0; i<boss_encounter_size; i++) {
+            delete boss_encounter[i];
+        }
+		delete []boss_encounter;
+    }
+    if (boss_IDs != NULL)
+        free(boss_IDs);
+/*
     if (enms_fought != NULL)
         delete [] enms_fought;
+*/
     if (random_encounter != NULL)
     {
         for (int i=0; i<num_enm; i++)
@@ -254,10 +270,21 @@ areas::~areas()
         delete [] random_encounter;
     }
 }
+void areas::nullPointers()
+{
+    movement = NULL;
+    treasure = NULL;
+//    enms_fought = NULL;
+    random_encounter = NULL;
+    boss_IDs = NULL;
+    characters = NULL;
+}
 void areas::loadArea(char* filename, party* team)
 {
     //boss_level = 25;
-    enms_fought = NULL;
+    nullPointers();
+    boss_defeated = false;
+//    enms_fought = NULL;
     random_encounter = NULL;
     characters = team;
     sprintf(name, "%s", "Test Dungeon");
@@ -265,15 +292,17 @@ void areas::loadArea(char* filename, party* team)
     FILE *fp;
     fp = fopen(filename, "r");
     assert(fp != NULL);
-    fscanf(fp, "%d ", &SIZE);
-    fscanf(fp, "%d %d", &start_row, &start_col);
-    fscanf(fp, "%d %d", &boss_row, &boss_col);
-    fscanf(fp, "%d ", &treas_rate);
-    fscanf(fp, "%d ", &enc_rate);
-    fscanf(fp, "%d ", &monster_lvl);
-    fscanf(fp, "%d ", &lvl_range);
-    fscanf(fp, "%d ", &num_monsters);
-    area_monsters = (int*)malloc(num_monsters*sizeof(int));
+
+    fscanf(fp, " '%[^']' ", name);                          //Dungeon Name
+    fscanf(fp, "%d ", &SIZE);                               //Dungeon Size
+    fscanf(fp, "%d %d", &start_row, &start_col);            //Starting location
+    fscanf(fp, "%d %d", &boss_row, &boss_col);              //Boss location
+    fscanf(fp, "%d ", &treas_rate);                         //Treasure spawn rate
+    fscanf(fp, "%d ", &enc_rate);                           //Enemy encounter rate
+    fscanf(fp, "%d ", &monster_lvl);                        //Base monster level
+    fscanf(fp, "%d ", &lvl_range);                          //Monster level offset
+    fscanf(fp, "%d ", &num_monsters);                       //Size of enemy pool
+    area_monsters = (int*)malloc(num_monsters*sizeof(int)); //Enemy pool array
 
     //Set the monster IDs for area
     for (int i=0; i<num_monsters; i++)
@@ -284,23 +313,31 @@ void areas::loadArea(char* filename, party* team)
     }
 
     //Set Boss information
-    /*
-        How it should work in the future:
-        int boss_encounter_size;
-        int *boss_IDs;
-        fscanf(fp, "%d ", &boss_level);
-        fscanf(fp, "%d ", &boss_encounter_size);
-        boss_IDs = (int*)malloc(boss_encounter_size*sizeof(int));
-        for (int i=0; i<boss_encounter_size; i++) {
-            int temp;
-            fscanf(fp, "%d ", &temp);
-            boss_IDs[i] = temp;
-        }
-    */
-    int boss_ID;
+    
+    //    How it should work in the future:
+    //boss_encounter_size;
+    //int *boss_IDs;
     fscanf(fp, "%d ", &boss_level);
-    fscanf(fp, "%d ", &boss_ID);
-    boss = getEnemy(boss_ID);
+    fscanf(fp, "%d ", &boss_encounter_size);
+    boss_IDs = (int*)malloc(boss_encounter_size*sizeof(int));
+    boss_encounter = new enemy*[boss_encounter_size];
+    for (int i=0; i<boss_encounter_size; i++) 
+    {
+        int temp;
+        fscanf(fp, "%d ", &temp);
+        boss_IDs[i] = temp;
+        boss_encounter[i] = getEnemy(boss_IDs[i]);
+        boss_encounter[i]->setLevel(boss_level);
+    }
+    
+//----------
+//    int boss_ID;
+//    fscanf(fp, "%d ", &boss_level);
+//    fscanf(fp, "%d ", &boss_ID);
+//    boss = new enemy*[1];
+//    boss[0] = getEnemy(boss_ID);
+//    boss[0]->setLevel(boss_level);
+//------------
 
     movement = (bool**)malloc(SIZE*sizeof(bool*));
     treasure = (bool**)malloc(SIZE*sizeof(bool*));
@@ -608,6 +645,11 @@ bool areas::enemy_encounter()
 	else
 		return false;
 }
+void areas::resetBoss()
+{
+    for (int i=0; i<boss_encounter_size;i++)
+        boss_encounter[i]->resetEnemy();
+}
 void areas::dungeon_loop()
 {
 	bool in_area = true;
@@ -653,7 +695,8 @@ void areas::dungeon_loop()
 						int status;
 						battle_init();
 
-						battle random_battle(enms_fought, num_enm, characters);	
+						//battle random_battle(enms_fought, num_enm, characters);	
+                        battle random_battle(random_encounter, num_enm, characters);
         				status = random_battle.battleLoop();
 						if (status == 0)
                         {
@@ -683,9 +726,26 @@ void areas::dungeon_loop()
 
 						//boss_func() returns 0 if you win, 1 if you lose
 						//boss_func() sets gameover to true if you lose
+                        if (boss_defeated)
+                        {
+                            printf("The boss for this dungeon has aready been defeated. Would you like to leave dungon?\n");
+                            int leave_sel = getSel("1. Yes", "2. No");
+                            if (leave_sel == 1)
+                            {
+                                printf("Leaving dungeon...\n");
+                                in_area = false;
+                            }
+                            else 
+                            {
+                                printf("You decide to stay in the dungeon...\n");
+                            }
+                            break;
+                            
+                        }
 						int status;
 						printf("Preparing to fight %s boss...\n", name);
-						battle boss_battle(boss, 1, characters);
+                        resetBoss();
+						battle boss_battle(boss_encounter, boss_encounter_size, characters);
 						status = boss_battle.battleLoop();
 						if (status == 0)
 						{
@@ -702,6 +762,7 @@ void areas::dungeon_loop()
                         else if (status == 2)
                         {
                             //Party fled from battle. Put whatever code you want to happen here when party flees
+                            //reset boss' health and stats
                         }
 						break;
 					}
@@ -1114,11 +1175,13 @@ int areas::step_through(int pos_row, int pos_col)
 }
 void areas::battle_init()
 {
+/*
     if (enms_fought != NULL)
     {
         delete [] enms_fought;
         enms_fought = NULL;
     }
+*/
     if (random_encounter != NULL)
     {
         for (int i=0; i<num_enm; i++)
@@ -1128,26 +1191,28 @@ void areas::battle_init()
     }   
  
 	num_enm = (rand()%4)+1;
-	enms_fought = new enemy [num_enm];
+//	enms_fought = new enemy [num_enm];
     random_encounter = new enemy*[num_enm];	
 
 	for (int i=0; i<num_enm; i++)
 	{
 		//Should have an array of enemy IDs specific to each area
 		enemy *temp = getEnemy(area_monsters[rand()%num_monsters]);
-		enms_fought[i] = *temp;
-		enms_fought[i].resetSkillLst();
+//		enms_fought[i] = *temp;
+//		enms_fought[i].resetSkillLst();
 
         random_encounter[i] = temp;
 
 		int LEVEL = monster_lvl;
-		LEVEL += (rand()%(2*(lvl_range+1))) - (lvl_range+1);
+        int offset = (rand()%(2*lvl_range + 1)) - lvl_range;
+		LEVEL += offset;
+
 		if (LEVEL < 1)
 			LEVEL = 1;
 		if (LEVEL > 100)
 			LEVEL = 100;
 
-		enms_fought[i].setLevel(LEVEL);
+//		enms_fought[i].setLevel(LEVEL);
         random_encounter[i]->setLevel(LEVEL);
 		//delete temp;		
 	}	
@@ -1155,11 +1220,13 @@ void areas::battle_init()
 void areas::battle_conclude()
 {
 //	free(enms_fought);
+/*
     if (enms_fought != NULL)
     {
-	    delete [] enms_fought;
+//	    delete [] enms_fought;
         enms_fought = NULL;
     }
+*/
     if (random_encounter != NULL)
     {
         for (int i=0; i<num_enm; i++)

@@ -50,7 +50,7 @@ class quest
 		item* getItemReward();		
 
 		virtual void checkQuestRequirements(item **inv, int size) =0;
-		virtual void checkQuestRequirements(enemy *enm_lst, int numE) =0;
+		virtual void checkQuestRequirements(enemy **enm_lst, int numE) =0;
 		virtual void printQuestRequirements() =0;
 		virtual void printDescription() =0;
 		virtual void saveQuest(FILE *fp) =0;
@@ -66,7 +66,7 @@ class killQuest : public quest
 	public:
 		void setQuest(int, int);
 		void checkQuestRequirements(item **inv, int size);
-		void checkQuestRequirements(enemy *enm_lst, int numE);
+		void checkQuestRequirements(enemy **enm_lst, int numE);
 		void printQuestRequirements();
 		void printDescription();
 		void saveQuest(FILE *fp);
@@ -86,7 +86,7 @@ class fetchQuest : public quest
 			{return fetchNum;}
 		void setQuest(int, int);
 		void checkQuestRequirements(item **inv, int size);
-		void checkQuestRequirements(enemy *enm_lst, int numE);
+		void checkQuestRequirements(enemy **enm_lst, int numE);
 		void printQuestRequirements();
 		void printDescription();
 		void saveQuest(FILE *fp);

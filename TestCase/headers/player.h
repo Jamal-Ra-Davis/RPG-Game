@@ -111,8 +111,10 @@ class player
 			void printStats();
 			void printSkills();
 			void printAllSkills();
+            char* getBattleSkillName(int);
+            bool hasSkillMP(int);
 			void useSkill(int skl_idx, player **ply_lst, int numP, int caster, int targ);
-			void useSkillBtl(int skl_idx, player **ply_lst, int numP, enemy *enm_lst,
+			void useSkillBtl(int skl_idx, player **ply_lst, int numP, enemy **enm_lst,
 								  int numE, int caster, int targ);
 			bool skillPass(int);
 			int skillType(int);

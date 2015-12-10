@@ -36,7 +36,7 @@ class skill
 			{next = in;}
 		//Overload this for in and out of battle, difference being the enemy info
 		virtual void use(player **ply_lst, int numP, int caster, int targ) =0;
-		virtual void use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+		virtual void use(player **ply_lst, int numP, enemy **enm_lst, int numE,
 							  int caster, int targ) =0;
 		virtual void printInfo() =0;
 };
@@ -47,7 +47,7 @@ class HealSpell: public skill
 	public:
 		void set_pts(int);
 		void use(player **ply_lst, int numP, int caster, int targ);
-		void use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+		void use(player **ply_lst, int numP, enemy **enm_lst, int numE,
 					int caster, int targ);
 		void printInfo();
 };
@@ -59,7 +59,7 @@ class AttSpell: public skill
 	public:
 		void set_pts(int);
       void use(player **ply_lst, int numP, int caster, int targ);
-      void use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+      void use(player **ply_lst, int numP, enemy **enm_lst, int numE,
 					int caster, int targ);
 		void printInfo();
 };
@@ -70,7 +70,7 @@ class AttSpellAll: public skill
 	public:
 		void set_pts(int);
 		void use(player **ply_lst, int numP, int caster, int targ);
-		void use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+		void use(player **ply_lst, int numP, enemy **enm_lst, int numE,
 					int caster, int targ);
 		void printInfo();
 };
@@ -81,7 +81,7 @@ class RevSpell: public skill
 	public:
 		void set_pts(int);
 		void use(player **ply_lst, int numP, int caster, int targ);
-		void use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+		void use(player **ply_lst, int numP, enemy **enm_lst, int numE,
 					int caster, int targ);
 		void printInfo();
 };
@@ -92,7 +92,7 @@ class MpDrain: public skill
 	public:
 		void set_pts(int);
 		void use(player **ply_lst, int numP, int caster, int targ);
-		void use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+		void use(player **ply_lst, int numP, enemy **enm_lst, int numE,
 					int caster, int targ);
 		void printInfo();
 };
@@ -103,7 +103,7 @@ class MpGift: public skill
 	public:
 		void set_pts(int);
 		void use(player **ply_lst, int numP, int caster, int targ);
-		void use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+		void use(player **ply_lst, int numP, enemy **enm_lst, int numE,
 					int caster, int targ);
 		void printInfo();
 };
@@ -114,7 +114,7 @@ class PhySkill: public skill
 	public:
 		void set_pts(int);
 		void use(player **ply_lst, int numP, int caster, int targ);
-		void use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+		void use(player **ply_lst, int numP, enemy **enm_lst, int numE,
 					int caster, int targ);
 		void printInfo();
 };
@@ -128,7 +128,7 @@ class E_AttSpell: public skill
 	public:
 		void set_pts(int);
 		void use(player **ply_lst, int numP, int caster, int targ);
-		void use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+		void use(player **ply_lst, int numP, enemy **enm_lst, int numE,
 					int caster, int targ);
 		void printInfo() {};
 };
@@ -139,7 +139,7 @@ class E_AttSpellAll: public skill
 	public:
 		void set_pts(int);
 		void use(player **ply_lst, int numP, int caster, int targ);
-		void use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+		void use(player **ply_lst, int numP, enemy **enm_lst, int numE,
 					int caster, int targ);
 		void printInfo() {};
 };
@@ -149,7 +149,7 @@ class E_CripplingShot: public skill
 	
 	public:
 		void use(player **ply_lst, int numP, int caster, int targ);
-		void use(player **ply_lst, int numP, enemy *enm_lst, int numE,
+		void use(player **ply_lst, int numP, enemy **enm_lst, int numE,
 					int caster, int targ);
 		void printInfo() {};
 };

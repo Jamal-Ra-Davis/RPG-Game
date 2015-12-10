@@ -28,7 +28,7 @@ game_hub::game_hub()
 	{
 		Dungeons[i] = new areas;
 	}
-	Dungeons[0]->setArea("Grassy Plains", 1, Team);
+	Dungeons[0]->setArea("Mossy Plains", 1, Team);
 	Dungeons[1]->setArea("Snow-covered Mountains", 2, Team);
 	Dungeons[2]->setArea("Lava Hell-scape", 3, Team);
 	Dungeons[3]->setArea("File Dungeon", 6, Team);
